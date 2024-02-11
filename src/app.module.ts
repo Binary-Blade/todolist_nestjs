@@ -1,21 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersController } from './modules/users/users.controller';
-import { UsersModule } from './modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoriesService } from './categories/categories.service';
-import { CategoriesModule } from './categories/categories.module';
-import { TasksModule } from './tasks/tasks.module';
-import { CategoriesModule } from './modules/categories/categories.module';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+// import { CategoriesModule } from './modules/categories/categories.module';
+// import { TasksModule } from './modules/tasks/tasks.module';
+// import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    UsersModule,
     ConfigModule.forRoot({
-      envFilePath: ['../.env.development'],
+      envFilePath: './.env',
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -29,16 +23,15 @@ import { AuthModule } from './auth/auth.module';
           username: config.get<string>('DB_USERNAME'), // Database username
           password: config.get<string>('DB_PASSWORD'), // Database password
           database: config.get<string>('DB_NAME'), // Database name
-          entities: [__dirname + '**/**/*.entity{.ts,.js}'], // Path to your entities
+          entities: [__dirname + 'src/modules/**/**/*.entity{.ts}'], // Path to your entities
           synchronize: config.get<boolean>('DB_SYNCHRONIZE'), // Synchronize the database state with the models on application startup
         };
       },
     }),
-    CategoriesModule,
-    TasksModule,
-    AuthModule,
+    UsersModule,
+    // CategoriesModule,
+    // TasksModule,
+    // AuthModule,
   ],
-  controllers: [AppController, UsersController],
-  providers: [AppService, CategoriesService],
 })
 export class AppModule {}
