@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = this.usersRepository.create(createUserDto);
@@ -35,12 +35,12 @@ export class UsersService {
   async update(id: number, userData: Partial<User>): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id });
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     Object.assign(user, userData);
-
-    return this.usersRepository.save(user)
-
+    return this.usersRepository.save(user);
   }
-
 
   async remove(id: number): Promise<any> {
     const user = await this.usersRepository.findOneBy({ id });
@@ -50,6 +50,5 @@ export class UsersService {
     }
 
     return this.usersRepository.remove(user);
-
   }
 }
