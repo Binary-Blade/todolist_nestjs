@@ -20,7 +20,7 @@ export class UsersController {
 
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
+    const user = await this.userService.create(createUserDto.email, createUserDto.password);
     return user;
   }
 
