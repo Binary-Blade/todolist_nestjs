@@ -5,7 +5,7 @@ import { UsersModule } from './modules/users/users.module';
 import { User } from './modules/users/entities/user.entity';
 // import { CategoriesModule } from './modules/categories/categories.module';
 // import { TasksModule } from './modules/tasks/tasks.module';
-// import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { User } from './modules/users/entities/user.entity';
     UsersModule,
     // CategoriesModule,
     // TasksModule,
-    // AuthModule,
+    AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
