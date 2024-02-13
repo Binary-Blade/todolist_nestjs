@@ -17,7 +17,7 @@ export class AuthService {
    * @throws BadRequestException if an account with the given email already exists.
    */
 
-  async signup(email: string, password: string) {
+  async signup(email: string, password: string, username?: string) {
 
     const usersExist = await this.usersService.findEmail(email);
 
@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     const passwordHashed = await argon2.hash(password);
-    const user = await this.usersService.create(email, passwordHashed);
+    const user = await this.usersService.create(username, email, passwordHashed);
 
     return user;
   }

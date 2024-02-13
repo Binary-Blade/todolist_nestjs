@@ -13,7 +13,7 @@ export class AuthController {
 
   @Post('/signup')
   async create(@Body() body: CreateUserDto) {
-    return this.authService.signup(body.email, body.password);
+    return this.authService.signup(body.email, body.password, body.username);
   }
 
 }
