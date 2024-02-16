@@ -9,11 +9,11 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly userService: UsersService) { }
+  constructor(private readonly authService: AuthService) { }
 
   @Post('/signup')
   async create(@Body() body: CreateUserDto) {
-    return this.authService.signup(body.username, body.email, body.password);
+    return this.authService.signup(body.email, body.password, body.username);
   }
 
 }
