@@ -1,9 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class CreateCategoryTable1708049822093 implements MigrationInterface {
+export class CreateCategoriesTable1622549061720 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
+
+    const table = await queryRunner.getTable('categories');
+
+    if (!table) {
+      await queryRunner.query(`
             CREATE TABLE "categories" (
                 "categoryId" SERIAL PRIMARY KEY,
                 "userId" INT NOT NULL,
@@ -12,6 +16,8 @@ export class CreateCategoryTable1708049822093 implements MigrationInterface {
                 FOREIGN KEY ("userId") REFERENCES "users"("userId")
             );
         `);
+
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
