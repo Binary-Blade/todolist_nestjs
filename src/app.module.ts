@@ -6,6 +6,8 @@ import { User } from './modules/users/entities/user.entity';
 // import { CategoriesModule } from './modules/categories/categories.module';
 // import { TasksModule } from './modules/tasks/tasks.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { Category } from './modules/categories/entities/category.entity';
+import { Task } from './modules/tasks/entities/task.entity';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { AuthModule } from './modules/auth/auth.module';
           username: config.get<string>('DB_USERNAME'), // Database username
           password: config.get<string>('DB_PASSWORD'), // Database password
           database: config.get<string>('DB_NAME'), // Database name
-          entities: [User], // Path entities
+          entities: [User, Category, Task], // Path entities
           synchronize: config.get<boolean>('DB_SYNCHRONIZE'), // Synchronize the database state with the models on application startup
         };
       },
