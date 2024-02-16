@@ -6,7 +6,11 @@ import * as argon2 from 'argon2';
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService) { }
-  // TODO: Make Nethod : Signup, Login, Logout
+
+  private hashPassword(password: string): Promise<string> {
+    return argon2.hash(password)
+  }
+
 
   /**
    * Asynchronously signs up a new user.
@@ -25,9 +29,16 @@ export class AuthService {
       throw new BadRequestException('Account already exists');
     }
 
-    const passwordHashed = await argon2.hash(password);
-    const user = await this.usersService.create(email, passwordHashed, username);
+    const passwordHashed = await this.hashPassword(password);
+    const user = await this.usersService.create({
+      email,
+      password: passwordHashed,
+      username
+    });
 
     return user;
   }
+
+
+
 }
