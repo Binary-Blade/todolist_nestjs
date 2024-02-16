@@ -28,7 +28,8 @@ export class UsersService {
       throw new NotFoundException('No user ID provided');
 
 
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOneBy({ userId: id });
+
     if (!user)
       throw new NotFoundException('User not found');
 
@@ -36,7 +37,7 @@ export class UsersService {
   }
 
   async update(id: number, userData: Partial<User>): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOneBy({ userId: id });
 
     if (!user)
       throw new NotFoundException('User not found');
@@ -46,7 +47,7 @@ export class UsersService {
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOneBy({ userId: id });
 
     if (!user)
       throw new NotFoundException('User not found');
