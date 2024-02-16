@@ -1,18 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Task } from './../../tasks/entities/task.entity';
+import { Category } from './../../categories/entities/category.entity';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  userId: number;
 
-  @Column({ length: 100, nullable: true })
-  username?: string;
+  @Column({ type: 'varchar' })
+  username: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   email: string;
 
-  @Exclude()
-  @Column()
+  @Column({ type: 'varchar' })
   password: string;
+
+  @OneToMany(() => Task, (task) => task.user)
+  tasks: Task[];
+
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
 }
+
