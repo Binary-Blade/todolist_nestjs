@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { User } from './modules/users/entities/user.entity';
 // import { CategoriesModule } from './modules/categories/categories.module';
-// import { TasksModule } from './modules/tasks/tasks.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { Category } from './modules/categories/entities/category.entity';
 import { Task } from './modules/tasks/entities/task.entity';
@@ -33,7 +33,7 @@ import { Task } from './modules/tasks/entities/task.entity';
     }),
     UsersModule,
     // CategoriesModule,
-    // TasksModule,
+    TasksModule,
     AuthModule,
   ],
 })
