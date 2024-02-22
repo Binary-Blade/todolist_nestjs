@@ -10,13 +10,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { Role } from '../../common/decorators/role';
+import { AccessTokenGuard } from '../../common/guards/access-token.guard';
+import { RoleGuard } from '../../common/guards/role.guard';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from '../auth/guard/access-token.guard';
-import { Role } from '../auth/decorators/role';
 import { UserRole } from './entities/user.entity';
-import { RoleGuard } from '../auth/guard/authorization.guard';
+import { UsersService } from './users.service';
 
 @UseGuards(AccessTokenGuard)
 @UseInterceptors(ClassSerializerInterceptor)
@@ -24,7 +24,6 @@ import { RoleGuard } from '../auth/guard/authorization.guard';
 export class UsersController {
   constructor(private userService: UsersService) { }
 
-  @UseGuards(AccessTokenGuard)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
