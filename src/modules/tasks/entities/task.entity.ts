@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './../../users/entities/user.entity';
-import { Category } from './../../categories/entities/category.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity('tasks')
 export class Task {
@@ -8,9 +8,11 @@ export class Task {
   taskId: number;
 
   @ManyToOne(() => User, (user) => user.tasks)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @ManyToOne(() => Category, (category) => category.tasks)
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
 
   @Column({ type: 'varchar' })
