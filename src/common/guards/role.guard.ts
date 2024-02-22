@@ -8,7 +8,7 @@ import { ROLE_KEY } from "../decorators/role";
 export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) { }
 
-  canActivate(context: ExecutionContext): boolean {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const requiredRole = this.reflector.getAllAndOverride<UserRole>(
       ROLE_KEY, [
       context.getHandler(),
