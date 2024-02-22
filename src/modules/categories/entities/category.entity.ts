@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './../../users/entities/user.entity';
 import { Task } from './../../tasks/entities/task.entity';
 
@@ -8,7 +8,9 @@ export class Category {
   @PrimaryGeneratedColumn('increment')
   categoryId: number;
 
+
   @ManyToOne(() => User, (user) => user.categories)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column({ type: 'varchar' })
