@@ -5,7 +5,7 @@ import { LoginDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User, UserRole } from '../users/entities/user.entity';
-import { InvalidCredentialsException } from './exceptions/invalid-credentiels.exception';
+import { InvalidCredentialsException } from '../../common/exceptions/invalid-credentiels.exception';
 
 export interface JWTTokens {
   token: string;

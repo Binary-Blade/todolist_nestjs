@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDTO } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { AccessTokenGuard } from './guard/access-token.guard';
+import { AccessTokenGuard } from '../../common/guards/access-token.guard';
 
 @Controller('auth')
 export class AuthController {
