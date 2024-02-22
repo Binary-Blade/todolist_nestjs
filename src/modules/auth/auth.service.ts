@@ -4,7 +4,7 @@ import * as argon2 from 'argon2';
 import { LoginDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 
 export interface JWTTokens {
   token: string;
@@ -27,6 +27,7 @@ export class AuthService {
     const user = await this.usersService.create({
       email,
       password: passwordHashed,
+      role: UserRole.USER,
     });
 
     // Exclude sensitive fields before returning
@@ -71,14 +72,20 @@ export class AuthService {
   private async getTokens(user: User): Promise<JWTTokens> {
     const [token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
-        { sub: user.email },
+        {
+          sub: user.email,
+          role: user.role
+        },
         {
           secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
           expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION'),
         }
       ),
       this.jwtService.signAsync(
-        { sub: user.email },
+        {
+          sub: user.email,
+          role: user.role
+        },
         {
           secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
           expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION'),
