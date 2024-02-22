@@ -19,18 +19,14 @@ export class AuthService {
     private configService: ConfigService
   ) { }
 
-  async signup(email: string, password: string, username?: string) {
+  async signup(email: string, password: string) {
     const userExist = await this.usersService.findEmail(email);
-
-    if (userExist) {
-      throw new BadRequestException('Account already exists');
-    }
+    if (userExist) throw new BadRequestException('Account already exists');
 
     const passwordHashed = await this.hashPassword(password);
     const user = await this.usersService.create({
       email,
       password: passwordHashed,
-      username
     });
 
     // Exclude sensitive fields before returning
