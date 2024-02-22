@@ -14,6 +14,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AccessTokenGuard } from '../auth/guard/access-token.guard';
+import { Role } from '../auth/decorators/role';
+import { UserRole } from './entities/user.entity';
+import { RoleGuard } from '../auth/guard/authorization.guard';
 
 @UseGuards(AccessTokenGuard)
 @UseInterceptors(ClassSerializerInterceptor)
@@ -28,11 +31,15 @@ export class UsersController {
     return user;
   }
 
+  @Role(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
   @Get('/findAll')
   findAll() {
     return this.userService.findAll();
   }
 
+  @Role(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
   @Get('/:id')
   find(@Param('id') id: string) {
     return this.userService.findOne(parseInt(id));
