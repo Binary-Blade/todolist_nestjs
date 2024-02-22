@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Task } from './../../tasks/entities/task.entity';
-import { Category } from './../../categories/entities/category.entity';
+import { Task } from '../../tasks/entities/task.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   USER = 'user',
@@ -14,9 +15,11 @@ export class User {
   @Column({ type: 'varchar' })
   email: string;
 
+  @Exclude()
   @Column({ type: 'varchar', nullable: false })
   password: string;
 
+  @Exclude()
   @Column({ type: 'varchar', default: UserRole.USER, name: 'userRole' })
   role: UserRole;
 
