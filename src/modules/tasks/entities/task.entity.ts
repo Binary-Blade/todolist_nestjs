@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { Status } from '../enum/status.enum';
 
 @Entity('tasks')
 export class Task {
@@ -21,8 +22,15 @@ export class Task {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'varchar' })
-  status: string;
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.WAITING,
+  })
+  status: Status;
+
+  @Column({ type: 'boolean' })
+  active: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
   deadline: Date;
