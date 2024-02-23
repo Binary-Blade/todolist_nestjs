@@ -26,35 +26,35 @@ export class CategoriesService {
     return this.categoryRepository.findBy({ user: { userId: user.userId } });
   }
 
-  async findOne(users: User, id: number): Promise<any> {
+  async findOne(user: User, id: number): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: { categoryId: id },
       relations: ['user']
     });
-    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (category.user.userId !== user.userId) throw new NotFoundException('Category not found');
     if (!category) throw new NotFoundException('Category not found');
 
     return category;
   }
 
-  async update(users: User, id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(user: User, id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: { categoryId: id },
       relations: ['user']
     });
-    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (category.user.userId !== user.userId) throw new NotFoundException('Category not found');
     if (!category) throw new NotFoundException('Category not found');
 
     Object.assign(category, updateCategoryDto);
     return this.categoryRepository.save(category);
   }
 
-  async remove(users: User, id: number) {
+  async remove(user: User, id: number): Promise<void> {
     const category = await this.categoryRepository.findOne({
       where: { categoryId: id },
       relations: ['user']
     });
-    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (category.user.userId !== user.userId) throw new NotFoundException('Category not found');
     if (!category) throw new NotFoundException('Category not found');
 
     await this.categoryRepository.remove(category)
