@@ -13,7 +13,8 @@ export class CreateTasksTable1622549061730 implements MigrationInterface {
                 "categoryId" INT NOT NULL,
                 "title" VARCHAR NOT NULL,
                 "description" TEXT,
-                "status" VARCHAR NOT NULL,
+                "status" "status_enum" NOT NULL DEFAULT 'Waiting',
+                "active" BOOLEAN NOT NULL,
                 "deadline" TIMESTAMP,
                 FOREIGN KEY ("userId") REFERENCES "users"("userId"),
                 FOREIGN KEY ("categoryId") REFERENCES "categories"("categoryId")
@@ -23,6 +24,9 @@ export class CreateTasksTable1622549061730 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "tasks";`);
+    await queryRunner.query(`
+      DROP TABLE "tasks";
+      DROP TYPE "status_enum";
+`);
   }
 }
