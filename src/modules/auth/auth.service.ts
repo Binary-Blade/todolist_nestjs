@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import * as argon2 from 'argon2';
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm'; import * as argon2 from 'argon2';
 import { LoginDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -15,53 +15,46 @@ export interface JWTTokens {
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) { }
 
   async signup(email: string, password: string) {
-    const userExist = await this.usersService.findEmail(email);
-    if (userExist) throw new BadRequestException('Account already exists');
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new HttpException('Email already registered!', 400);
+    }
     const passwordHashed = await this.hashPassword(password);
 
-    const user = await this.usersService.create({
+    await this.userRepository.save({
       email,
       password: passwordHashed,
       role: UserRole.USER,
     });
-    // Exclude sensitive fields before returning
-    const { password: _, ...result } = user;
-    return result;
   }
 
   async login(loginDto: LoginDTO): Promise<JWTTokens> {
-    try {
-      const { email, password } = loginDto;
-      const user = await this.usersService.findEmail(email);
+    const { email, password } = loginDto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    const validPassword = await argon2.verify(user.password, password);
 
-      if (user) {
-        const validPassword = await argon2.verify(user.password, password);
-        if (!validPassword) throw new InvalidCredentialsException();
-        return this.getTokens(user)
-      }
-      throw new InvalidCredentialsException();
-    } catch (err) {
-      throw new InvalidCredentialsException();
-    }
+    if (!user) throw new InvalidCredentialsException();
+    if (!validPassword) throw new InvalidCredentialsException();
+
+    return this.getTokens(user);
   }
 
   async refreshToken(token: string): Promise<JWTTokens> {
     try {
-      const { sub: email } = await this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET')
+      const { sub: email } = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
+      const user = await this.userRepository.findOneOrFail({ where: { email } });
 
-      const user = await this.usersService.findEmail(email);
       return this.getTokens(user);
-
     } catch (err) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new InvalidCredentialsException();
     }
   }
 

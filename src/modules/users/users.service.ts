@@ -17,7 +17,7 @@ export class UsersService {
   }
 
   findEmail(email: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { email } })
+    return this.usersRepository.findOneOrFail({ where: { email } })
   }
 
   findAll(): Promise<User[]> {

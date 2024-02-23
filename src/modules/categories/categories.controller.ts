@@ -5,7 +5,6 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 
-@UseGuards(AccessTokenGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('categories')
 export class CategoriesController {
@@ -16,6 +15,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto, req.user.id);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Get('/findAll')
   findAll() {
     return this.categoriesService.findAll();
