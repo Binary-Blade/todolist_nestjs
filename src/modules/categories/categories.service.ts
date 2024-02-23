@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,26 +17,47 @@ export class CategoriesService {
 
   async create(createCategoryDto: CreateCategoryDto, userId: number): Promise<Category> {
     const user = await this.userRepository.findOneBy({ userId });
-
     const newCategory = this.categoryRepository.create(createCategoryDto);
     newCategory.user = user;
     return this.categoryRepository.save(newCategory);
   }
 
-  findAll() {
-    return this.categoryRepository.find();
+  findAll(user: User): Promise<Category[]> {
+    return this.categoryRepository.findBy({ user: { userId: user.userId } });
   }
 
-  async findOne(id: number) {
-    const category = await this.categoryRepository.findOneBy({ categoryId: id });
+  async findOne(users: User, id: number): Promise<any> {
+    const category = await this.categoryRepository.findOne({
+      where: { categoryId: id },
+      relations: ['user']
+    });
+    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (!category) throw new NotFoundException('Category not found');
+
     return category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(users: User, id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOne({
+      where: { categoryId: id },
+      relations: ['user']
+    });
+    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (!category) throw new NotFoundException('Category not found');
+
+    Object.assign(category, updateCategoryDto);
+    return this.categoryRepository.save(category);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(users: User, id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { categoryId: id },
+      relations: ['user']
+    });
+    if (category.user.userId !== users.userId) throw new NotFoundException('Category not found');
+    if (!category) throw new NotFoundException('Category not found');
+
+    await this.categoryRepository.remove(category)
+
   }
 }
