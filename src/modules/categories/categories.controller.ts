@@ -1,18 +1,19 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
-import { AccessTokenGuard } from '../../common/guards/access-token.guard';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { AccessTokenGuard } from '../auth/guard/access-token.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@UseInterceptors(ClassSerializerInterceptor)
+
 @UseGuards(AccessTokenGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
-  @Post('create/:userId')
-  create(@Body() createCategoryDto: CreateCategoryDto, @Param('userId') userId: string) {
-    return this.categoriesService.create(createCategoryDto, +userId);
+  @Post('create')
+  create(@Body() createCategoryDto: CreateCategoryDto, @Request() req: any) {
+    return this.categoriesService.create(createCategoryDto, req.user.id);
   }
 
   @Get('/findAll')

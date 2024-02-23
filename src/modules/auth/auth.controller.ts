@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDTO } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { AccessTokenGuard } from '../../common/guards/access-token.guard';
+import { AccessTokenGuard } from './guard/access-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +24,6 @@ export class AuthController {
     return await this.authService.login(loginDto);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Post('/refresh-token')
   async refreshToken(@Body() { refreshToken }: RefreshTokenDto) {
     return await this.authService.refreshToken(refreshToken);

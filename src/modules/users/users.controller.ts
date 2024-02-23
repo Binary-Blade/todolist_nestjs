@@ -10,8 +10,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Role } from '../../common/decorators/role';
-import { AccessTokenGuard } from '../../common/guards/access-token.guard';
+import { Role } from '../../common/decorators/role.decorator';
+import { AccessTokenGuard } from '../auth/guard/access-token.guard';
 import { RoleGuard } from '../../common/guards/role.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
