@@ -7,7 +7,7 @@ import { User } from 'src/modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 type JwtPayload = {
-  sub: string;
+  sub: number;
   role: string;
 };
 
@@ -27,8 +27,8 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload): Promise<User> {
     // Assuming payload.sub contains the user's email
-    const userEmail = payload.sub;
-    const user = await this.usersRepository.findOne({ where: { email: userEmail } });
+    const userId = payload.sub;
+    const user = await this.usersRepository.findOne({ where: { userId } });
     if (!user) {
       throw new UnauthorizedException();
     }

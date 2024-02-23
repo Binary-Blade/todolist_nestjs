@@ -36,7 +36,8 @@ export class AuthService {
 
   async login(loginDto: LoginDTO): Promise<JWTTokens> {
     const { email, password } = loginDto;
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOneBy({ email });
+    console.log(user)
     const validPassword = await argon2.verify(user.password, password);
 
     if (!user) throw new InvalidCredentialsException();
@@ -47,10 +48,10 @@ export class AuthService {
 
   async refreshToken(token: string): Promise<JWTTokens> {
     try {
-      const { sub: email } = await this.jwtService.verifyAsync(token, {
+      const { sub: userId } = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
-      const user = await this.userRepository.findOneOrFail({ where: { email } });
+      const user = await this.userRepository.findOneOrFail({ where: { userId } });
 
       return this.getTokens(user);
     } catch (err) {
@@ -65,14 +66,14 @@ export class AuthService {
   private async getTokens(user: User): Promise<JWTTokens> {
     const [token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
-        { sub: user.email, role: user.role },
+        { sub: user.userId, role: user.role },
         {
           secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
           expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION'),
         }
       ),
       this.jwtService.signAsync(
-        { sub: user.email, role: user.role },
+        { sub: user.userId, role: user.role },
         {
           secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
           expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION'),
