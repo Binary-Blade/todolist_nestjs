@@ -4,7 +4,6 @@ export class LoginDTO {
 
   @IsNotEmpty()
   @IsEmail()
-  @MaxLength(100)
   readonly email: string;
 
   @IsNotEmpty()
