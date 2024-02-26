@@ -6,8 +6,9 @@ import { User } from '../users/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
-//TODO: Finish and create findAllTaskInCategory service 
+
 // TODO: Put second parameters userId: number to user: User for more constance
+
 @Injectable()
 export class TasksService {
   constructor(
@@ -44,6 +45,20 @@ export class TasksService {
 
   findAll(user: User): Promise<Task[]> {
     return this.taskRepository.findBy({ user: { userId: user.userId } });
+  }
+
+  async findAllInCategory(user: User, categoryId: number): Promise<Task[]> {
+    const category = await this.categoryRepository.findOne({
+      where: { categoryId, user: { userId: user.userId } },
+      relations: ['tasks', 'user'],
+    });
+    if (category.user.userId !== user.userId) throw new NotFoundException('Category not found');
+    if (!category) throw new NotFoundException(`Category with ID ${categoryId} not found for this user`);
+
+    return this.taskRepository.find({
+      where: { category: { categoryId: category.categoryId }, user: { userId: user.userId } },
+      relations: ['category', 'user'],
+    });
   }
 
   async findOne(user: User, id: number): Promise<Task> {
