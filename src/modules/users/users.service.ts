@@ -31,7 +31,7 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
-
+  // TODO: VERIFY IF Only user can update himself
   async update(id: number, userData: Partial<User>): Promise<User> {
     const user = await this.usersRepository.findOneBy({ userId: id });
     if (!user) throw new NotFoundException('User not found');
