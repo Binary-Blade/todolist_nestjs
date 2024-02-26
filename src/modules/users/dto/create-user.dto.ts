@@ -8,7 +8,6 @@ export class CreateUserDto {
   @MinLength(5)
   readonly email: string;
 
-  @IsStrongPassword()
   @IsNotEmpty()
   readonly password: string;
 
