@@ -6,6 +6,7 @@ import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 
+// TODO: Put second parameters userId: number to user: User for more constance
 @Injectable()
 export class CategoriesService {
   constructor(
