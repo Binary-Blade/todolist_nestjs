@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/global-filters/http-exception-filter';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import { runMigrations } from './migration/migration-runner';
 // import { AllExceptionsFilter } from './global-filters/all-exceptions.filter';
 
 async function bootstrap() {
@@ -18,7 +19,7 @@ async function bootstrap() {
     new HttpExceptionFilter(configService),
     // new AllExceptionsFilter(httpAdapterHost),   TODO: Correct it later 
   )
-
+  await runMigrations();
   await app.listen(3000);
 }
 bootstrap();
