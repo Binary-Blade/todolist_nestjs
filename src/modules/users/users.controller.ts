@@ -24,6 +24,8 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private userService: UsersService) { }
 
+  @Role(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
