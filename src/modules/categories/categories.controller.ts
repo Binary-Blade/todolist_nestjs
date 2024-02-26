@@ -4,12 +4,14 @@ import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CustomRequest } from 'src/common/interface/custom-request.interface';
+import { TasksService } from '../tasks/tasks.service';
+import { Task } from '../tasks/entities/task.entity';
 // TODO: Type Request method any, make a interface for that
 @UseGuards(AccessTokenGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) { }
+  constructor(private readonly categoriesService: CategoriesService, private tasksService: TasksService) { }
 
   @Post('create')
   create(@Body() createCategoryDto: CreateCategoryDto, @Request() req: CustomRequest) {
@@ -21,6 +23,10 @@ export class CategoriesController {
     return this.categoriesService.findAll(req.user);
   }
 
+  @Get(':categoryId/tasks')
+  findAllTasksInCategory(@Param('categoryId') categoryId: string, @Request() req: any): Promise<Task[]> {
+    return this.tasksService.findAllInCategory(req.user, parseInt(categoryId));
+  }
   @Get('/:id')
   findOne(@Param('id') id: string, @Request() req: any) {
     return this.categoriesService.findOne(req.user, +id);
