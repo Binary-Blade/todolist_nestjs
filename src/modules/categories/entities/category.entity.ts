@@ -8,7 +8,6 @@ export class Category {
   @PrimaryGeneratedColumn('increment')
   categoryId: number;
 
-
   @ManyToOne(() => User, (user) => user.categories)
   @JoinColumn({ name: 'userId' })
   user: User;

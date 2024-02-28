@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 
 // TODO: Put second parameters userId: number to user: User for more constance
+
 @Injectable()
 export class CategoriesService {
   constructor(
@@ -16,7 +17,7 @@ export class CategoriesService {
     private userRepository: Repository<User>
   ) { }
 
-  async create(createCategoryDto: CreateCategoryDto, userId: number): Promise<Category> {
+    async create(createCategoryDto: CreateCategoryDto, userId: number): Promise<Category> {
     const user = await this.userRepository.findOneBy({ userId });
     const newCategory = this.categoryRepository.create(createCategoryDto);
     newCategory.user = user;
